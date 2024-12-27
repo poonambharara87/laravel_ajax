@@ -53,5 +53,25 @@
             });
         });
     });
+
+    getUserData(id);
+    
+    function getUserData()
+    {
+        var id = $(this).data('id');
+        
+        $.ajax({
+            type:"GET",
+            url:"user"+id,
+            proccessData:false,
+            contentType:false,
+            success: function(data){
+                alert(data);
+            },
+            error:function(data){
+                alert(data);
+            }
+        })
+    }
     </script>   
 </html>

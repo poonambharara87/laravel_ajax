@@ -27,6 +27,37 @@ class UserController extends Controller
         return response()->json(['res' => 'User created Successfully!']);
     }
 
+    public function index(){
+        $users = User::all();
 
+        return view('users.index', ['users' => $users]);
+    }
     
+    public function update(Request $request)
+    {
+        // return 
+        $user = User::find($request->id);
+        if(!$user)
+        {
+            return response()->json(['res' => 'User not Found!']);
+        }else{
+            $user->name= $request->name;
+            $user->email = $request->email;
+            $user->save();
+            return response()->json(['res' => $user]);
+        }
+    }
+
+    public function getUserData($id)
+    {
+        $user = User::find($id);
+        if(!$user)
+        {
+            $data = json_decode('User not Found');
+            return $data;    
+        }
+        $data = json_decode($user);
+
+        return $data;
+    }
 }
