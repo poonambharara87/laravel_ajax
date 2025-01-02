@@ -146,24 +146,31 @@ class UserController extends Controller
         });
 
         $date_time = Carbon::now()->format('Y-m-d H:i:s');  
-
-        $reset_password = PasswordReset::where('email', $request->email)->first();
         
-        if(!$reset_password)
+        if($request->email)
         {
-            $passwordReset = new PasswordReset;
-            $passwordReset->email = $request->email;
-            $passwordReset->token = $token;
-            $passwordReset->created_at = $date_time;
-            $passwordReset->save();
+            PasswordReset::where('email', $request->email)->delete();
         }
-        $reset_password->token = $data['token'];
+        $reset_password = new PasswordReset;
+        $reset_password->email = $request->email;
+        $reset_password->token = $token;
         $reset_password->created_at = $date_time ;
         $reset_password->save();
-            
-        // ============
 
-        // ============
         return response()->json(['success' => 'Please check your mail to reset your passowrd!']);
+    }
+
+    public function resetPasswordLoad(Request $request)
+    {
+        $passwordReset = PasswordReset::where('token', $request->token)->get();
+        if(isset($request->token) && count($resetData) > 0)
+        {
+            $user = User::where('email', $passwordReset[0]['email'])->get();
+            return view('mail.resetPassword',compact('user'));
+        }
+        else{
+            return view('404');
+        }
+        
     }
 }
